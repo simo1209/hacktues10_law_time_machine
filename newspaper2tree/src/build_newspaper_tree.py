@@ -43,7 +43,9 @@ def build_newspaper_tree(newspaper):
     
     #TODO find law from metadata. law will be tree root
 
-    content_lines = prefix_lines(newspaper_lines[newspaper_info_starts_at:])
+    newspaper_info_stops_at = next( idx for idx, line in enumerate(newspaper_lines) if re.search(r'^-+$', line) )
+
+    content_lines = prefix_lines(newspaper_lines[newspaper_info_starts_at:newspaper_info_stops_at])
     for content_line in content_lines:
         content_line['parent'] = find_parent_idx(content_lines, content_line)
 
