@@ -36,7 +36,7 @@ def find_parent_idx(content_lines, child_line):
 
 def build_newspaper_tree(newspaper):
 
-    newspaper_lines = [ line for line in newspaper.split('\n') if line.strip() != '' ]
+    newspaper_lines = [ line.strip() for line in newspaper.split('\n') if line.strip() != '' ]
 
     newspaper_info_starts_at = find_newspaper_metadata(newspaper_lines)
     assert newspaper_info_starts_at is not None
