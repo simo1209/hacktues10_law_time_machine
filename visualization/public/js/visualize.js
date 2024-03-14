@@ -1,3 +1,4 @@
+
 const series = [
   {
     'date': Date.parse('2024-03-12'),
@@ -30,8 +31,8 @@ const series = [
 var nodes = [{x:100, y:200, radius: 10, main: 1,}]
 
 let radius = 20;
-
-for(let i = 0; i < 10; i++) {
+let neighbours_count = 10;
+for(let i = 0; i < neighbours_count; i++) {
     nodes.push({
         x : nodes[0].x + radius * Math.cos(2 * Math.PI * i / 10),
         y: nodes[0].y + radius * Math.sin(2 * Math.PI * i / 10),
@@ -39,7 +40,7 @@ for(let i = 0; i < 10; i++) {
     })
 }
 let links = []; 
-for(let i = 0; i < 10; i++) {
+for(let i = 0; i < neighbours_count; i++) {
     links.push({source: 0, target: i+1});
 }
 
@@ -54,6 +55,22 @@ function dragstarted(event, d) {
     
     d3.select(this).raise().attr("stroke", "black");
 }
+
+setInterval(() => {
+    neighbours_count+=1;
+    nodes.push({
+        x : nodes[0].x + radius * Math.cos(2 * Math.PI * neighbours_count / 10),
+        y: nodes[0].y + radius * Math.sin(2 * Math.PI * neighbours_count / 10),
+        radius: 5
+    });
+    links.push({source: 0, target: neighbours_count});
+
+    simulation
+    .nodes(nodes)
+    .force('link')
+    .links(links)
+    simulation.alphaTarget(0.01).restart();
+}, 10000)
 
 function dragged(event, d) {
     d.px += event.dx;
