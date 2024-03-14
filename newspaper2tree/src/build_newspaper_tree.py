@@ -19,8 +19,7 @@ def find_line_prefix_weight(line):
             return reg_weight 
 
 def prefix_lines(lines):
-    nonempty_lines = [ line for line in lines if line.strip() != '' ]
-    content_lines = [ {'idx': line_idx, 'line':line, 'weight':find_line_prefix_weight(line)} for line_idx, line in enumerate(nonempty_lines)]
+    content_lines = [ {'idx': line_idx, 'line':line, 'weight':find_line_prefix_weight(line)} for line_idx, line in enumerate(lines)]
 
     return content_lines
 
@@ -37,7 +36,7 @@ def find_parent_idx(content_lines, child_line):
 
 def build_newspaper_tree(newspaper):
 
-    newspaper_lines = newspaper.split('\n')
+    newspaper_lines = [ line for line in newspaper.split('\n') if line.strip() != '' ]
 
     newspaper_info_starts_at = find_newspaper_metadata(newspaper_lines)
     assert newspaper_info_starts_at is not None
