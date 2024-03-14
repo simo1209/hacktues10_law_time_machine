@@ -1,5 +1,32 @@
+const series = [
+  {
+    'date': Date.parse('2024-03-12'),
+    'graph': {
+      'ЗАКОН 1': ['параграф 1', 'параграф 2'],
+      'параграф 1': ['алинея 1'],
+      'параграф 2': ['алинея 1'],
+    }
+  },
+  {
+    'date': Date.parse('2024-03-13'),
+    'graph': {
+      'ЗАКОН 1': ['параграф 1', 'параграф 2'],
+      'параграф 1': ['алинея 1', 'алинея 2'],
+      'параграф 2': ['алинея 1'],
+    }
+  },
+  {
+    'date': Date.parse('2024-03-14'),
+    'graph': {
+      'ЗАКОН 1': ['параграф 1', 'параграф 2', 'параграф 3'],
+      'параграф 1': ['алинея 1', 'алинея 2'],
+      'параграф 2': ['алинея 1'],
+      'параграф 3': ['алинея 1'],
+    }
+  },
+]
 
-var width = 300, height = 300
+
 var nodes = [{x:100, y:200, radius: 10, main: 1,}]
 
 let radius = 20;
@@ -17,9 +44,8 @@ for(let i = 0; i < 10; i++) {
 }
 
 
-
 var simulation = d3.forceSimulation(nodes)
-  .force('charge', d3.forceManyBody().strength(-100))
+  .force('charge', d3.forceManyBody())
   //.force('center', d3.forceCenter(width / 2, height / 2))
   .force('link', d3.forceLink().links(links))
   .on('tick', ticked);
@@ -54,12 +80,21 @@ let zoom = d3.zoom()
   .on('zoom', handleZoom);
 
 function handleZoom(e) {
-    console.log('asd')
     d3.select('svg g')
     .call(zoom);
 }
 
+const svg_el = document.querySelector('#visualization');
+svg_el.setAttribute('width', window.innerWidth);
+svg_el.setAttribute('height', window.innerHeight);
+
+const links_el = document.createElement('g');
+links_el.className = "links";
+svg_el.appendChild(links_el);
+
 function ticked() {
+  
+
     var u = d3.select('svg')
         .selectAll('circle')
         .data(nodes)
