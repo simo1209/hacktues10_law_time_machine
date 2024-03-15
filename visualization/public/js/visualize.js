@@ -116,14 +116,35 @@ const links_el = document.createElement('g');
 links_el.className = "links";
 svg_el.appendChild(links_el);
 
-function ticked() {
-  
+let svg = d3.select('svg');
 
-    let svg = d3.select('svg')
-        .call(zoom)
-        .selectAll('circle')
-        .data(nodes)
-        .join('circle')
+svg
+  .call(zoom);
+
+let circles = svg
+  .selectAll('circle')
+  .data(nodes)
+  .join('circle')
+
+
+let g = d3.select('.links')
+.selectAll('line')
+.data(links)
+.join('line');
+
+var label = svg.selectAll(".labels")
+						.data(nodes)
+						.enter()
+						.append("text")
+					    .text(function (d) { return 'test'; })
+					    .style("text-anchor", "middle")
+					    .style("fill", "#555")
+					    .style("font-family", "Arial")
+					    .style("font-size", 12);
+
+function ticked() {
+
+  circles
         .attr('r', function(d) {
             return d.radius
         })
@@ -138,11 +159,7 @@ function ticked() {
             .on("drag", dragged)
             .on("end", dragended))
 
-
-    let g = d3.select('.links')
-		.selectAll('line')
-		.data(links)
-		.join('line')
+    g
 		.attr('x1', function(d) {
 			return d.source.x
 		})
@@ -156,6 +173,8 @@ function ticked() {
 			return d.target.y
 		});
 
+  label.attr("x", function(d){ return d.x; })
+    .attr("y", function (d) {return d.y - 10; })
 
   
 }
