@@ -1,7 +1,9 @@
 line {
     stroke: #ccc;
 }
-
+.nodes {
+  color: #ccc;
+}
 #controls {
   position: absolute;
   top: 50px;
