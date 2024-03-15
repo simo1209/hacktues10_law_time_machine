@@ -1,12 +1,12 @@
 import re
 
 prefix_regexes = [
-    (0, r'^"?§ \d+\. '),
-    (1, r'^"?\d+\. '),
-    (2, r'^"?Чл+\. '),
-    (3, r'^"?\w\) '),
+    (1, r'^"?§ \d+\. '),
+    (2, r'^"?\d+\. '),
+    (3, r'^"?Чл+\. '),
     (4, r'^"?\w\) '),
-    (5, r'^"?\(\d+\) '),
+    (5, r'^"?\w\) '),
+    (6, r'^"?\(\d+\) '),
 ]
 
 def find_newspaper_metadata(newspaper_lines):
@@ -46,6 +46,8 @@ def parse_header(header_lines):
     law = [ line for line in header_lines if 'ЗАКОН' in line ]
     law_node['line'] = law[0] if len(law) > 0 else 'ЗАКОН'
 
+    law_node['weight'] = 0
+
     return law_node
     
 
@@ -76,6 +78,6 @@ def build_newspaper_tree(newspaper):
     newspaper_tree = {}
     law_node = parse_header(newspaper_lines[:newspaper_info_starts_at])
     newspaper_tree['nodes'] = [law_node] + content_lines
-    newspaper_tree['lines'] = [ { 'source': content_lines[line['parent']]['line'] if line['parent'] else 'law', 'target': line['line'] } for line in content_lines ]
+    newspaper_tree['lines'] = [ { 'source': content_lines[line['parent']]['line'] if line['parent'] else law_node['line'], 'target': line['line'] } for line in content_lines ]
 
     return newspaper_tree

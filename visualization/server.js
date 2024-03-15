@@ -19,7 +19,7 @@ app.post('/get_paper', (req, res) => {
   
   let extStart = req.body.name.lastIndexOf('.');
   let name = req.body.name.substring(0, extStart) + '.json';
-  fs.readFile('./public/'+name,((err, data) => {
+  fs.readFile('./public/laws_json/'+name,((err, data) => {
     let file = data.toString()
     
     res.json(JSON.parse(file))
