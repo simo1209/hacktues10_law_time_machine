@@ -55,7 +55,7 @@ function dragstarted(event, d) {
     
     d3.select(this).raise().attr("stroke", "black");
 }
-
+/*
 setInterval(() => {
     neighbours_count+=1;
     nodes.push({
@@ -71,6 +71,7 @@ setInterval(() => {
     .links(links)
     simulation.alphaTarget(0.01).restart();
 }, 10000)
+*/
 
 function dragged(event, d) {
     d.px += event.dx;
@@ -94,11 +95,14 @@ function dragended(event, d) {
 }
 
 let zoom = d3.zoom()
+  .scaleExtent([0.1, 10])
   .on('zoom', handleZoom);
 
-function handleZoom(e) {
-    d3.select('svg g')
-    .call(zoom);
+function handleZoom(event, d) {
+    simulation.stop();
+    d3.selectAll('circle, g')
+      .attr("transform", event.transform);
+    simulation.restart();
 }
 
 const svg_el = document.querySelector('#visualization');
@@ -113,6 +117,7 @@ function ticked() {
   
 
     var u = d3.select('svg')
+        .call(zoom)
         .selectAll('circle')
         .data(nodes)
         .join('circle')
@@ -128,7 +133,7 @@ function ticked() {
         .call(d3.drag()
             .on("start", dragstarted)
             .on("drag", dragged)
-            .on("end", dragended));
+            .on("end", dragended))
 
 
     var u = d3.select('.links')
