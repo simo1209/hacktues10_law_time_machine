@@ -39,6 +39,15 @@ def find_parent_idx(content_lines, child_line):
             return line_idx
         line_idx-=1 
 
+def parse_header(header_lines):
+    law_node = {}
+
+    law_node['ciela'] = header_lines[0]
+    law = [ line for line in header_lines if 'ЗАКОН' in line ]
+    law_node['line'] = law[0] if len(law) > 0 else 'ЗАКОН'
+
+    return law_node
+    
 
 def build_newspaper_tree(newspaper):
 
@@ -65,7 +74,8 @@ def build_newspaper_tree(newspaper):
     #     newspaper_tree[content_line['line']] = [ child_line for child_line in content_lines if child_line['parent'] == content_line['idx'] ]
 
     newspaper_tree = {}
-    newspaper_tree['nodes'] = content_lines
+    law_node = parse_header(newspaper_lines[:newspaper_info_starts_at])
+    newspaper_tree['nodes'] = [law_node] + content_lines
     newspaper_tree['lines'] = [ { 'source': content_lines[line['parent']]['line'] if line['parent'] else 'law', 'target': line['line'] } for line in content_lines ]
 
     return newspaper_tree
