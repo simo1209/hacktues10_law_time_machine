@@ -3,11 +3,22 @@ const series = [
   {
     'date': Date.parse('2024-03-12'),
     'graph': {
-      'ЗАКОН 1': ['параграф 1', 'параграф 2'],
-      'параграф 1': ['алинея 1'],
-      'параграф 2': ['алинея 1'],
+      'nodes': [
+        {id: "ЗАКОН 1", radius: 15},
+        {id: "ЗАКОН 1_параграф 1", radius: 10},
+        {id: "ЗАКОН 1_параграф 2", radius: 10},
+        {id: "ЗАКОН 1_параграф 1_алинея 1", radius: 5},
+        {id: "ЗАКОН 1_параграф 2_алинея 1", radius: 5},
+      ],
+      'links': [
+        {source: "ЗАКОН 1", target: "ЗАКОН 1_параграф 1"},
+        {source: "ЗАКОН 1", target: "ЗАКОН 1_параграф 2"},
+        {source: "ЗАКОН 1_параграф 1", target: "ЗАКОН 1_параграф 1_алинея 1"},
+        {source: "ЗАКОН 1_параграф 2", target: "ЗАКОН 1_параграф 2_алинея 1"},
+      ]
     }
   },
+  /*
   {
     'date': Date.parse('2024-03-13'),
     'graph': {
@@ -25,30 +36,22 @@ const series = [
       'параграф 3': ['алинея 1'],
     }
   },
+  */
 ]
 
 
-var nodes = [{x:100, y:200, radius: 10, main: 1,}]
-
-let radius = 20;
-let neighbours_count = 10;
-for(let i = 0; i < neighbours_count; i++) {
-    nodes.push({
-        x : nodes[0].x + radius * Math.cos(2 * Math.PI * i / 10),
-        y: nodes[0].y + radius * Math.sin(2 * Math.PI * i / 10),
-        radius: 5,
-    })
-}
-let links = []; 
-for(let i = 0; i < neighbours_count; i++) {
-    links.push({source: 0, target: i+1});
-}
 
 
-var simulation = d3.forceSimulation(nodes)
-  .force('charge', d3.forceManyBody())
-  //.force('center', d3.forceCenter(width / 2, height / 2))
-  .force('link', d3.forceLink().links(links))
+let newspaper = series[0].graph;
+console.log(newspaper);
+
+let nodes = newspaper.nodes;
+let links = newspaper.links;
+
+let simulation = d3.forceSimulation(nodes)
+  .force('charge', d3.forceManyBody().strength(-500))
+  //.force('center', d3.forceCenter(window.innerWidth / 2, window.innerHeight / 2))
+  .force('link', d3.forceLink().links(links).id(d => d.id))
   .on('tick', ticked);
 
 function dragstarted(event, d) {
@@ -116,7 +119,7 @@ svg_el.appendChild(links_el);
 function ticked() {
   
 
-    var u = d3.select('svg')
+    let svg = d3.select('svg')
         .call(zoom)
         .selectAll('circle')
         .data(nodes)
@@ -136,7 +139,7 @@ function ticked() {
             .on("end", dragended))
 
 
-    var u = d3.select('.links')
+    let g = d3.select('.links')
 		.selectAll('line')
 		.data(links)
 		.join('line')
