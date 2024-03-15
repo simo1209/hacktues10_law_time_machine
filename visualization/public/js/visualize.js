@@ -26,14 +26,23 @@ function createGraph(name) {
 function visualize(newspaper) {
     let nodes = newspaper.nodes;
     let links = newspaper.lines;
-    
+    console.log(links)
     nodes.push({id: nodes.length, line: 'law', weight: -1})
 
     if(simulation) {
       simulation.stop();
       d3.select('svg').selectAll("*").remove();
+      d3.select('svg')
+        .append('g')
+        .attr('class', 'links')
       console.log('reset!');
     }
+
+    let svg = d3.select('svg');
+    
+    svg.on("dblclick.zoom", () => {
+      console.log('asd')
+    });
 
     simulation = d3.forceSimulation(nodes)
       .force('charge', d3.forceManyBody().strength(-1000))
@@ -45,6 +54,18 @@ function visualize(newspaper) {
         
         d3.select(this).raise().attr("stroke", "black");
     }
+
+    const svg_el = document.querySelector('#visualization');
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+
+    svg_el.setAttribute('width', width);
+    svg_el.setAttribute('height', height);
+
+    const links_el = document.createElement('g');
+    links_el.className = "links";
+    svg_el.appendChild(links_el);
+
     /*
     setInterval(() => {
         neighbours_count+=1;
@@ -76,7 +97,6 @@ function visualize(newspaper) {
 
     function dragended(event, d) {
         if (!event.active) {
-            console.log('asd')
             simulation.alphaTarget(0.01).restart()
         };
         d.fixed = true; 
@@ -94,21 +114,20 @@ function visualize(newspaper) {
 
     function handleZoom(event, d) {
         simulation.stop();
-        console.log(event)
         d3.selectAll('circle, g, text')
           .attr("transform", event.transform);
         simulation.restart();
     }
 
-    const svg_el = document.querySelector('#visualization');
-    svg_el.setAttribute('width', window.innerWidth);
-    svg_el.setAttribute('height', window.innerHeight);
-
-    const links_el = document.createElement('g');
-    links_el.className = "links";
-    svg_el.appendChild(links_el);
-
-    let svg = d3.select('svg');
+    function clicked(event, d) {
+      event.stopPropagation();
+      
+      svg.transition().duration(750).call(
+        zoom.transform,
+        d3.zoomIdentity.translate(width / 2, height / 2).scale(7).translate(-d.x, -d.y),
+        d3.pointer(event)
+      );
+    }
 
     svg.call(zoom)//.attr("transform","translate(100,50)scale(.5,.5)"); ;
 
@@ -116,27 +135,28 @@ function visualize(newspaper) {
       .selectAll('circle')
       .data(nodes)
       .join('circle')
-
+      .on('click', clicked)
 
     let g = d3.select('.links')
-    .selectAll('line')
-    .data(links)
-    .join('line');
+      .selectAll('line')
+      .data(links)
+      .join('line');
 
     var label = svg.selectAll(".labels")
-                .data(nodes)
-                .enter()
-                .append("text")
-                  .text(function (d) { return d.line.substr(0, 20) })
-                  .style("text-anchor", "middle")
-                  .style("fill", "#555")
-                  .style("font-family", "Arial")
-                  .style("font-size", 12);
+      .data(nodes)
+      .enter()
+      .append("text")
+        .text(function (d) { return d.line.substr(0, 20) })
+        .style("text-anchor", "middle")
+        .style("fill", "#555")
+        .style("font-family", "Arial")
+        .style("font-size", 12);
 
       //d3.selectAll('circle, g, text')
       //  .attr("transform", event.transform);
     d3.selectAll('circle, g, text')
       .attr("transform", `translate(200, 200),scale(${initialZoom},${initialZoom})`);
+   
     function ticked() {
 
       circles
@@ -166,7 +186,7 @@ function visualize(newspaper) {
         });
 
       label.attr("x", function(d){ return d.x; })
-        .attr("y", function (d) {return d.y - 10; }) 
+        .attr("y", function (d) {return d.y - 30; }) 
     }
 }
 
