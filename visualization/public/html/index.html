@@ -1,15 +1,28 @@
 <html>
     <head>
+        <script
+        src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
         <link rel="stylesheet" href="../css/style.css"></link>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/js/selectize.min.js" integrity="sha512-IOebNkvA/HZjMM7MxL0NYeLYEalloZ8ckak+NDtOViP7oiYzG5vn6WVXyrJDiJPhl4yRdmNAG49iuLmhkUdVsQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/css/selectize.bootstrap2.min.css" integrity="sha512-nim/mAXv18Io6DcBNFdFPO52HDTV+X3wpwcy8O0c69gFf8DzR02uA6axNOv1YImhZuiCFIeiQmxiHO3ZqumPYQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
     <body>
     <!--<div id="controls">
         
 </div>-->
+        <select id="select-newspaper" class="sel">
+
+        </select>
         <svg id="visualization">
             <g class="links"></g>
         </svg>
-        <script src="../../node_modules/d3/dist/d3.min.js" ></script>
+        <script src="/file/d3.min.js" ></script>
+        
         <script src="../js/visualize.js"></script>
+        <script src="../js/select.js"></script>
+
     </body>
 </html>

@@ -35,6 +35,7 @@ if(!fs.existsSync('./laws_changes')) {
 }
 (async() => {
 for(let i = 0; i < ids; i++){
+  console.log(`CURRENTLY ON ID: ${i}`)
   await delay(300)
   fetch(`https://www.ciela.net/svobodna-zona-darjaven-vestnik/issue/${firstId+i}/published`)
     .then((response) => response.text())

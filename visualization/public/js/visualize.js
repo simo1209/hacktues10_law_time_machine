@@ -1,62 +1,41 @@
 
-const series = [
-  {
-    'date': Date.parse('2024-03-12'),
-    'graph': {
-      'nodes': [
-        {id: "ЗАКОН 1", radius: 15},
-        {id: "ЗАКОН 1_параграф 1", radius: 10},
-        {id: "ЗАКОН 1_параграф 2", radius: 10},
-        {id: "ЗАКОН 1_параграф 1_алинея 1", radius: 5},
-        {id: "ЗАКОН 1_параграф 2_алинея 1", radius: 5},
-      ],
-      'links': [
-        {source: "ЗАКОН 1", target: "ЗАКОН 1_параграф 1"},
-        {source: "ЗАКОН 1", target: "ЗАКОН 1_параграф 2"},
-        {source: "ЗАКОН 1_параграф 1", target: "ЗАКОН 1_параграф 1_алинея 1"},
-        {source: "ЗАКОН 1_параграф 2", target: "ЗАКОН 1_параграф 2_алинея 1"},
-      ]
-    }
-  },
-  /*
-  {
-    'date': Date.parse('2024-03-13'),
-    'graph': {
-      'ЗАКОН 1': ['параграф 1', 'параграф 2'],
-      'параграф 1': ['алинея 1', 'алинея 2'],
-      'параграф 2': ['алинея 1'],
-    }
-  },
-  {
-    'date': Date.parse('2024-03-14'),
-    'graph': {
-      'ЗАКОН 1': ['параграф 1', 'параграф 2', 'параграф 3'],
-      'параграф 1': ['алинея 1', 'алинея 2'],
-      'параграф 2': ['алинея 1'],
-      'параграф 3': ['алинея 1'],
-    }
-  },
-  */
-]
+
+let simulation = null;
+let initialZoom = .30
 
 
-let promise = fetch('/public/2002-01-30.0.json')
-  .then(response => response.text())
-  .then(text => {
-    visualize(JSON.parse(text))
+function createGraph(name) {
+
+  $.ajax({
+    url: '/get_paper',
+    type: 'POST',
+    dataType:"json",
+    contentType: "application/json",
+    data: JSON.stringify({name}),
+    success: (newspaper) => {
+      
+      visualize(newspaper)
+    },
+    fail: (data) => {
+        alert('Cant get newspappers!');
+    }
   })
+}
 
-let newspaper = series[0].graph;
-console.log(newspaper);
 
 function visualize(newspaper) {
     let nodes = newspaper.nodes;
     let links = newspaper.lines;
     
-    console.log(nodes, links)
     nodes.push({id: nodes.length, line: 'law', weight: -1})
 
-    let simulation = d3.forceSimulation(nodes)
+    if(simulation) {
+      simulation.stop();
+      d3.select('svg').selectAll("*").remove();
+      console.log('reset!');
+    }
+
+    simulation = d3.forceSimulation(nodes)
       .force('charge', d3.forceManyBody().strength(-1000))
       .force('center', d3.forceCenter(window.innerWidth / 2, window.innerHeight / 2))
       .force('link', d3.forceLink().links(links).id(d => d.line).distance(100))
@@ -156,8 +135,8 @@ function visualize(newspaper) {
 
       //d3.selectAll('circle, g, text')
       //  .attr("transform", event.transform);
-      d3.selectAll('circle, g, text')
-      .attr("transform", "translate(200, 200),scale(.15,.15)");
+    d3.selectAll('circle, g, text')
+      .attr("transform", `translate(200, 200),scale(${initialZoom},${initialZoom})`);
     function ticked() {
 
       circles
