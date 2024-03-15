@@ -8,6 +8,7 @@ prefix_regexes = [
     (5, r'^"?\w\) '),
     (6, r'^"?\(\d+\) '),
 ]
+prefix_regexes_table = dict(prefix_regexes)
 
 def find_newspaper_metadata(newspaper_lines):
     for line_idx, line in enumerate(newspaper_lines):
@@ -77,6 +78,10 @@ def build_newspaper_tree(newspaper):
 
     newspaper_tree = {}
     law_node = parse_header(newspaper_lines[:newspaper_info_starts_at])
+
+    for line in content_lines:
+        line['line'] = re.split(prefix_regexes_table[line['weight']], line['line'])[1] if line['weight'] in prefix_regexes_table else line['line']
+
     newspaper_tree['nodes'] = [law_node] + content_lines
     newspaper_tree['lines'] = [ { 'source': content_lines[line['parent']]['line'] if line['parent'] else law_node['line'], 'target': line['line'] } for line in content_lines ]
 
