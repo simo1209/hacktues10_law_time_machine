@@ -97,6 +97,11 @@ function dragended(event, d) {
     
 }
 
+let drag = d3.drag()
+  .on("start", dragstarted)
+  .on("drag", dragged)
+  .on("end", dragended)
+
 let zoom = d3.zoom()
   .scaleExtent([0.1, 10])
   .on('zoom', handleZoom);
@@ -118,8 +123,7 @@ svg_el.appendChild(links_el);
 
 let svg = d3.select('svg');
 
-svg
-  .call(zoom);
+svg.call(zoom);
 
 let circles = svg
   .selectAll('circle')
@@ -154,10 +158,7 @@ function ticked() {
         .attr('cy', function(d) {
             return d.y
         })
-        .call(d3.drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended))
+        .call(drag);
 
     g
 		.attr('x1', function(d) {
@@ -175,7 +176,7 @@ function ticked() {
 
   label.attr("x", function(d){ return d.x; })
     .attr("y", function (d) {return d.y - 10; })
-
+    .call(drag);
   
 }
 
