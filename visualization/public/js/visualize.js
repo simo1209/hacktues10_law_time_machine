@@ -1,7 +1,7 @@
 
 
 let simulation = null;
-let initialZoom = .30
+let initialZoom = .40
 
 
 function createGraph(name) {
@@ -131,27 +131,35 @@ function visualize(newspaper) {
 
     svg.call(zoom)//.attr("transform","translate(100,50)scale(.5,.5)"); ;
 
-    let circles = svg
-      .selectAll('circle')
-      .data(nodes)
-      .join('circle')
-      .on('click', clicked)
+
 
     let g = d3.select('.links')
       .selectAll('line')
       .data(links)
       .join('line');
 
-    var label = svg.selectAll(".labels")
+    let label = svg.selectAll(".labels")
       .data(nodes)
       .enter()
       .append("text")
-        .text(function (d) { return d.line.substr(0, 20) })
+        .text((d) => d.line.substr(0, 20))
+        .attr("id", (d) => d.idx)
         .style("text-anchor", "middle")
         .style("fill", "#555")
         .style("font-family", "Arial")
         .style("font-size", 12);
 
+    let circles = svg
+      .selectAll('circle')
+      .data(nodes)
+      .join('circle')
+      .on('click', clicked)
+      .on('mouseover', (e, d) => {
+        svg.select(`[id="${d.idx}"]`).text(() => d.line)
+      })
+      .on('mouseout', (e, d) => {
+        svg.select(`[id="${d.idx}"]`).text(() => d.line.substr(0, 20))
+      })
       //d3.selectAll('circle, g, text')
       //  .attr("transform", event.transform);
     d3.selectAll('circle, g, text')
