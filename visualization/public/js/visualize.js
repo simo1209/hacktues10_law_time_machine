@@ -45,7 +45,7 @@ function visualize(newspaper) {
     });
 
     simulation = d3.forceSimulation(nodes)
-      .force('charge', d3.forceManyBody().strength(-300))
+      .force('charge', d3.forceManyBody().strength(-2000))
       .force('center', d3.forceCenter(window.innerWidth / 2, window.innerHeight / 2))
       .force('link', d3.forceLink().links(links).id(d => d.line).distance(100))
       .on('tick', ticked);
@@ -169,7 +169,7 @@ function visualize(newspaper) {
 
       circles
             .attr('r', function(d) {
-                return 25 - (d.weight * 4)
+                return 25 - (Math.pow(4, -d.weight))
             })
             .attr('cx', function(d) {
                 return d.x
