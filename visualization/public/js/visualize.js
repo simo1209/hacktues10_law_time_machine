@@ -27,7 +27,7 @@ function visualize(newspaper) {
     let nodes = newspaper.nodes;
     let links = newspaper.lines;
     console.log(links)
-    nodes.push({id: nodes.length, line: 'law', weight: -1})
+    // nodes.push({id: nodes.length, line: 'law', weight: -1})
 
     if(simulation) {
       simulation.stop();
@@ -45,7 +45,7 @@ function visualize(newspaper) {
     });
 
     simulation = d3.forceSimulation(nodes)
-      .force('charge', d3.forceManyBody().strength(-1000))
+      .force('charge', d3.forceManyBody().strength(-300))
       .force('center', d3.forceCenter(window.innerWidth / 2, window.innerHeight / 2))
       .force('link', d3.forceLink().links(links).id(d => d.line).distance(100))
       .on('tick', ticked);
@@ -142,7 +142,7 @@ function visualize(newspaper) {
       .data(nodes)
       .enter()
       .append("text")
-        .text((d) => d.line.substr(0, 20))
+        .text((d) => d.line.substr(0, 20) + '...')
         .attr("id", (d) => d.idx)
         .style("text-anchor", "middle")
         .style("fill", "#555")
@@ -158,7 +158,7 @@ function visualize(newspaper) {
         svg.select(`[id="${d.idx}"]`).text(() => d.line)
       })
       .on('mouseout', (e, d) => {
-        svg.select(`[id="${d.idx}"]`).text(() => d.line.substr(0, 20))
+        svg.select(`[id="${d.idx}"]`).text(() => d.line.substr(0, 20) + '...')
       })
       //d3.selectAll('circle, g, text')
       //  .attr("transform", event.transform);
