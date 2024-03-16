@@ -119,9 +119,21 @@ function visualize(newspaper) {
         simulation.restart();
     }
 
+    function get_all_relations(node) {
+      let children = nodes.filter(n => n.parent == node.idx);
+
+      return children.concat(children.map(get_all_relations).flat())
+    }
+
     function clicked(event, d) {
       event.stopPropagation();
+      console.log(d);
       
+      let full_change = get_all_relations(d)
+      let text = d.line +'<br>'+ full_change.map(d=>d.line).join('<br>') 
+      
+      $('#law-body').html(text);
+      $('#law-modal').modal('show');
       svg.transition().duration(750).call(
         zoom.transform,
         d3.zoomIdentity.translate(width / 2, height / 2).scale(7).translate(-d.x, -d.y),
